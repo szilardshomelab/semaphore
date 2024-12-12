@@ -1,0 +1,22 @@
+---
+- name: Create snapshots on Proxmox VMs
+  hosts: proxmox
+  gather_facts: no
+  tasks:
+    - name: Create snapshot for VMs
+      proxmox_kvm:
+        api_host: "{{ proxmox_host }}"
+        api_user: "{{ proxmox_user }}"
+        api_password: "{{ proxmox_password }}"
+        validate_certs: no
+        vmid: "{{ item.vmid }}"
+        node: "{{ item.node }}"
+        snapshot_name: "snapshot-{{ ansible_date_time.date }}"
+        state: present
+      with_items:
+        - { node: "node1", vmid: "1001" }
+        - { node: "node1", vmid: "2001" }
+        - { node: "node2", vmid: "1002" }
+        - { node: "node2", vmid: "2002" }
+        - { node: "node3", vmid: "1003" }
+        - { node: "node3", vmid: "2003" }
